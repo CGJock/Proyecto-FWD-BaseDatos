@@ -55,6 +55,7 @@ INSERT INTO Rooms (room_id, room_number, hotel_id, type_id, occupied) VALUES
 (9, 109, 5, 3, FALSE),
 (10, 110, 5, 1, FALSE);
 
+
 INSERT INTO Reservations (reservation_id, user_id, check_in_date, check_out_date, number_visitors, total_price) VALUES
 (1, 1, '2024-09-01', '2024-09-05', 2, 500),
 (2, 2, '2024-09-10', '2024-09-12', 1, 200),
@@ -78,3 +79,4 @@ INSERT INTO Room_reservation (reservation_id, room_id) VALUES
 (5, 8),
 (6, 9),
 (7, 10);
+=======
