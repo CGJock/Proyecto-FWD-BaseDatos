@@ -27,7 +27,36 @@ BEGIN
     CALL consult_room_by_date(4,'2024-10-08', @avaliable_room );
     SELECT @avaliable_room
 
-   
+DELIMITER//
+
+--consultar el promedio de ocupacion del hotel en un rango estimado 
+CREATE PROCEDURE calculate_hotel_ocupation_by_date(
+    IN date_start DATE,
+    IN date_end DATE,
+    IN hotel_id INT
+)
+BEGIN
+    DECLARE number_of_rooms INT;
+
+    SELECT rooms_number INTO number_of_rooms
+    FROM hotels
+    WHERE hotel_id = hotel_id;
+
+    
+    FROM rooms
+    JOIN reservations ON rooms.room_id = reservations.room_id
+    WHERE reservations.hotel_id = hotel_id
+    AND reservations.check_out_date BETWEEN date_start AND date_end;
+
+END//
+
+DELIMITER ;
+
+CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07',1);
+
+
+
+
 
 
 
