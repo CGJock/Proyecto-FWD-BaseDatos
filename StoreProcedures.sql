@@ -15,7 +15,7 @@ BEGIN
     SELECT COUNT(*) INTO room_aviavility
     FROM rooms 
     WHERE (actual_date > check_out_date) 
-    AND (actual_date < check_in_date);
+    OR (actual_date < check_in_date);
     
     IF room_aviavility > 0 THEN
         SET check_room = FALSE;
@@ -25,7 +25,7 @@ BEGIN
     END//
     DELIMITER ;
 
-    CALL consult_room_by_date(1,'2024-06-15','2024-06-20','2024-06-17', @check_room );
+    CALL consult_room_by_date(4,'2024-06-15','2024-06-20','2024-06-17', @check_room );
     SELECT @check_room
 
 
