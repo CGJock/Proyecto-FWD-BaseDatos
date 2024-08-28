@@ -49,3 +49,29 @@ FROM hotels
 WHERE location LIKE  '%a'
 
 --6 Consulta para obtener las reservas de un cliente (por email) realizadas en el mes anterior.
+SELECT reservation_id
+FROM reservations
+JOIN users ON reserevatons.user_id = users.user_id
+WHERE
+users.mail = "martinez@example.com"
+AND MONTH(reservations.reservation_date) MONTH(DATE_SUB(CURRENT_DATE,INTERVAL 1, MONTH))
+AND YEAR(reserations.reservation_date) YEAR(DATE_SUB(CURRENT_DATE, INTERVAL 1, YEAR));
+
+--7 Consulta para calcular el promedio de reservas diarias en un hotel
+
+SELECT reservations.reservation_id AS total_reservations,
+COUNT(DISTINCT reservations.reservation_id)
+FROM room_reservation
+JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id
+WHERE reservations.reservation_date = '2024-08-25'
+GROUP BY reservations.reservation_id
+
+
+
+
+
+JOIN room_reservation  ON reservations.reservation_id = room_reservation.reservation_id
+JOIN rooms ON reservations.reservation_id = reservations.reservation_id
+JOIN hotels ON rooms.hotel_id = hotels.hotel_id
+
+
