@@ -49,3 +49,9 @@ FROM hotels
 WHERE location LIKE  '%a'
 
 --6 Consulta para obtener las reservas de un cliente (por email) realizadas en el mes anterior.
+SELECT users.email,reservations.reservation_id
+FROM users
+JOIN reservations ON users.user_id = reservations.user_id
+WHERE users.email = "garcia@example.com" AND reservations.check_in_date = DATE_SUB(CURDATE(), INTERVAL 1 MONTH);
+
+--7 Consulta para calcular el promedio de reservas diarias en un hotel.
