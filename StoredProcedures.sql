@@ -67,6 +67,6 @@ DELIMITER ;
 
 CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07', 2,@result);
 
-DROP PROCEDURE calculate_hotel_ocupation_by_date
+
 
 SELECT @result

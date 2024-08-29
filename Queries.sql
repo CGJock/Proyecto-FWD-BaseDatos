@@ -49,9 +49,38 @@ FROM hotels
 WHERE location LIKE  '%a'
 
 --6 Consulta para obtener las reservas de un cliente (por email) realizadas en el mes anterior.
-SELECT users.email,reservations.reservation_id
-FROM users
-JOIN reservations ON users.user_id = reservations.user_id
-WHERE users.email = "garcia@example.com" AND reservations.check_in_date = DATE_SUB(CURDATE(), INTERVAL 1 MONTH);
+SELECT reservation_id
+FROM reservations
+JOIN users ON reserevatons.user_id = users.user_id
+WHERE
+users.mail = "martinez@example.com"
+AND MONTH(reservations.reservation_date) MONTH(DATE_SUB(CURRENT_DATE,INTERVAL 1, MONTH))
+AND YEAR(reserations.reservation_date) YEAR(DATE_SUB(CURRENT_DATE, INTERVAL 1, YEAR));
 
---7 Consulta para calcular el promedio de reservas diarias en un hotel.
+--7 Consulta para calcular el promedio de reservas diarias en un hotel
+SELECT reservations.reservation_id AS total_reservations,
+COUNT(DISTINCT reservations.reservation_id)
+FROM room_reservation
+JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id
+WHERE reservations.reservation_date = '2024-08-25'
+GROUP BY reservations.reservation_id
+
+--8 Consulta para identificar el hotel con la mayor ocupación en el mes anterior.
+SELECT hotels.hotel_name, COUNT(room_reservation.room_id) AS total_occupancy
+FROM rooms
+JOIN room_reservation ON room_reservation.room_id = rooms.room_id
+JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id
+JOIN hotels ON hotels.hotel_id = rooms.hotel_id
+WHERE reservations.reservation_date BETWEEN DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+GROUP BY hotels.hotel_id
+ORDER BY total_occupancy DESC
+LIMIT 1;
+
+--9 Consulta para listar los hoteles que tienen habitaciones disponibles pero no han sido reservadas en el último mes.
+SELECT DISTINCT hotels.hotel_name
+FROM hotels
+JOIN rooms ON hotels.hotel_id = rooms.hotel_id
+LEFT JOIN room_reservation ON rooms.room_id = room_reservation.room_id
+LEFT JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id AND reservations.reservation_date BETWEEN DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
+WHERE reservations.reservation_id IS NULL;
+
