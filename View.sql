@@ -12,3 +12,4 @@ SELECT users.user_id,users.role_id,users.first_name,users.middle_name,roles.name
 FROM users
 JOIN roles ON roles.role_id = users.role_id
 
+--view que muestra las habitaciones de los hoteles con la ocupacion

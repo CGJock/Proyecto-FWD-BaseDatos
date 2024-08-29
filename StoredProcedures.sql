@@ -76,11 +76,16 @@ CREATE PROCEDURE insertar_reservation(
     IN room_id INT
     )
     BEGIN
+    DECLARE last_reservation_id INT;
+
     INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors)
     VALUES(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors);
 
+    
+    SET last_reservation_id = LAST_INSERT_ID();
+
     INSERT INTO room_reservation(reservation_id,room_id)
-    VALUES(NEW.reservation_id,room_id);
+    VALUES(last_reservation_id,room_id);
 END//
 
 DELIMITER ;
@@ -94,17 +99,30 @@ CREATE PROCEDURE insert_room_procedure(
     IN room_id INT,
     IN room_number INT,
     IN hotel_id INT,
-    IN type_id INT 
+    IN type_id INT,
+    IN user_id INT,
+    OUT message text
 )
     BEGIN
-    INSERT INTO rooms(room_id,room_number,hotel_id,type_id)
-    VALUES(room_id,room_number,hotel_id,type_id);
-
+        DECLARE actual_role TEXT;
+        SELECT  name_role INTO actual_role
+        FROM user_list
+        WHERE user_id = user_list.user_id;
+        
+        IF actual_role = 'Admin' THEN
+            INSERT INTO rooms(room_id,room_number,hotel_id,type_id)
+            VALUES(room_id,room_number,hotel_id,type_id);
+            SET message = 'insertado con exito';
+        ELSE
+            SET message = "No se puede crear no es admin";
+        END IF;
 END//
 
 DELIMITER ;
 
-CALL insert_room_procedure(20,200,3,1)
+CALL insert_room_procedure(22,200,3,1,2,@message)
+
+SELECT @message
 
 
 
