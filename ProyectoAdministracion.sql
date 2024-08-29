@@ -83,14 +83,14 @@ CREATE Table Reservation_state(
 
 
 CREATE TABLE Reservations(
-    reservation_id INT,
+    reservation_id INT AUTO_INCREMENT,
     user_id INT NOT NULL,
-    reservation_state_id INT NOT NULL,
+    reservation_state_id INT NOT NULL DEFAULT 1,
     reservation_date DATE NOT NULL,
     check_in_date DATE NOT NULL,
     check_out_date DATE NOT NULL,
     number_visitors INT CHECK(number_visitors > 0) NOT NULL,
-    total_price INT CHECK(total_price >= 0)  NOT NULL,
+    total_price INT CHECK(total_price >= 0)  DEFAULT 0,
     PRIMARY KEY(reservation_id),
     FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY(reservation_state_id) REFERENCES Reservation_state(reservation_state_id) ON DELETE CASCADE
@@ -100,6 +100,7 @@ CREATE TABLE Reservations(
 CREATE TABLE Room_reservation(
     reservation_id INT NOT NULL,
     room_id INT NOT NULL,
+    PRIMARY KEY(reservation_id,room_id),
     FOREIGN KEY(reservation_id) REFERENCES Reservations(reservation_id) ON DELETE CASCADE,
     FOREIGN KEY(room_id) REFERENCES Rooms(room_id) ON DELETE CASCADE
     
