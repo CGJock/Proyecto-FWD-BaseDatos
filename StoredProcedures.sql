@@ -96,7 +96,6 @@ END//
 DELIMITER ;
 
 CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',@message)
-      
 
 SELECT @message
 
