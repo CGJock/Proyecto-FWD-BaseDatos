@@ -1,6 +1,6 @@
 USE Reservations_data;
 
---Consultar disponibilidad de una habitacion de acuerdo a una fecha
+--Procedure para consultar disponibilidad de una habitacion de acuerdo a una fecha
 DELIMITER//
 
 CREATE PROCEDURE consult_room_by_date(
@@ -63,7 +63,46 @@ CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07', 2,@result);
 
 SELECT @result
 
+DELIMITER//
 
+CREATE PROCEDURE add_user(
+    IN user_id INT,
+    IN role_id INT,
+    IN sub_id INT,
+    IN pay_id INT,
+    IN first_name VARCHAR(30),
+    IN middle_name VARCHAR(30),
+    IN last_name VARCHAR(30),
+    IN email VARCHAR(50),
+    IN birth_date DATE,
+    OUT message text
+)
+    BEGIN
+        DECLARE actual_role TEXT;
+        SELECT  name_role INTO actual_role
+        FROM user_list
+        WHERE role_id = 1
+        LIMIT 1;
+        
+        IF actual_role = 'Admin' THEN
+            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date)
+            VALUES(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date);
+            SET message = 'insertado con exito';
+        ELSE
+            SET message = "Solo admin pueden agregar los admin";
+        END IF;
+END//
+
+DELIMITER ;
+
+CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',@message)
+      
+
+SELECT @message
+
+drop PROCEDURE add_user
+
+--procedure para insertar una habitacion
 DELIMITER//
 
 CREATE PROCEDURE insertar_reservation(
@@ -90,7 +129,7 @@ END//
 
 DELIMITER ;
 
-CALL insertar_reservation(4,2,'2024-08-29','2024-08-30','2024-09-05',2,5)
+CALL insertar_reservation(6999888,2,'2024-08-29','2024-08-30','2024-09-05',2,5)
 
 
 DELIMITER//
@@ -123,6 +162,9 @@ DELIMITER ;
 CALL insert_room_procedure(22,200,3,1,2,@message)
 
 SELECT @message
+
+
+
 
 
 
