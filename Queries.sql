@@ -22,16 +22,19 @@ FROM rooms
 JOIN room_reservation ON rooms.room_id = room_reservation.room_id
 JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id
 JOIN hotels ON rooms.hotel_id = hotels.hotel_id 
+WHERE rooms.occupied = 1
 GROUP BY hotels.hotel_name
 ORDER BY total_reservaciones DESC
 
 --2 Consulta para contar cuántas habitaciones disponibles hay en un hotel específico en una fecha dada.
-SELECT hotels.hotel_name,COUNT(rooms.hotel_id) AS Habitaciones_disponibles
+SELECT hotels.hotel_name,COUNT(rooms.occupied) AS Habitaciones_disponibles
 FROM rooms
-JOIN room_reservation ON rooms.room_id = room_reservation.room_id
+JOIN hotels ON rooms.hotel_id = hotels.hotel_id
+WHERE occupied = 0 AND rooms.hotel_id = 2 AND NOT EXISTS(SELECT 1
+FROM room_reservation 
 JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id
-JOIN hotels ON rooms.hotel_id = hotels.hotel_id 
-WHERE "2024-08-01" NOT BETWEEN reservations.check_in_date  AND reservations.check_out_date AND rooms.hotel_id = 1;
+WHERE room_reservation.room_id = rooms.room_id AND '2024-08-25' = reservations.check_in_date 
+)
 
 --3 Consulta para buscar hoteles por nombre.
 SELECT hotel_name,location,rooms_number
@@ -53,8 +56,8 @@ SELECT reservation_id
 FROM reservations
 JOIN users ON reservations.user_id = users.user_id
 WHERE
-users.email = "martinez@example.com"
-AND MONTH(reservations.reservation_date) = MONTH(DATE_SUB(CURDATE(),INTERVAL 1 MONTH));
+users.email = "garcia@example.com"
+AND reservations.reservation_date BETWEEN '2024-07-01' AND CURRENT_DATE  ;
 
 --7 Consulta para calcular el promedio de reservas diarias en un hotel
 SELECT reservations.reservation_id AS total_reservations,
@@ -81,5 +84,5 @@ FROM hotels
 JOIN rooms ON hotels.hotel_id = rooms.hotel_id
 LEFT JOIN room_reservation ON rooms.room_id = room_reservation.room_id
 LEFT JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id AND reservations.reservation_date BETWEEN DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
-WHERE reservations.reservation_id IS NULL;
+WHERE rooms.occupied = 0 ;
 

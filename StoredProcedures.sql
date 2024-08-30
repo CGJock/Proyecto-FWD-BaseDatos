@@ -63,7 +63,7 @@ END//
 
 DELIMITER ;
 
-CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07', 2,@result);
+CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07', 1,@result);
 
 SELECT @result
 
@@ -93,7 +93,7 @@ CREATE PROCEDURE add_user(
         
         
         IF actual_role = 'Admin' THEN
-            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date,actual_role)
+            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date)
             VALUES(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date);
             SET message = 'insertado con exito';
         ELSE
@@ -103,7 +103,7 @@ END//
 
 DELIMITER ;
 
-CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',1,@message)
+CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',103684,@message)
 
 SELECT @message
 
@@ -122,11 +122,17 @@ CREATE PROCEDURE insertar_reservation(
     IN check_out_date DATE,
     IN number_visitors INT,
     IN room_id INT,
+    IN user_admin INT
     )
     BEGIN
     DECLARE last_reservation_id INT;
+    DECLARE actual_role TEXT;
 
-    INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors,user_admin)
+        SELECT  name_role INTO actual_role
+        FROM user_list
+        WHERE user_admin = user_list.user_id;
+
+    INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors)
     VALUES(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors);
 
     
@@ -138,7 +144,9 @@ END//
 
 DELIMITER ;
 
-CALL insertar_reservation(6999888,2,'2024-08-29','2024-08-30','2024-09-05',2,5)
+CALL insertar_reservation(6999888,2,'2024-08-29','2024-08-30','2024-09-05',2,40,103684)
+
+
 
 --============================================== insert room procedure =====================================================
 
@@ -169,9 +177,10 @@ END//
 
 DELIMITER ;
 
-CALL insert_room_procedure(22,200,3,1,2,@message)
+CALL insert_room_procedure(300,200,3,1,103684,@message)
 
 SELECT @message
+
 
 --============================================== cancelar reservacion =====================================================
 
