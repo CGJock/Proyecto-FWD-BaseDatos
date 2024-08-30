@@ -54,8 +54,8 @@ FROM reservations
 JOIN users ON reserevatons.user_id = users.user_id
 WHERE
 users.mail = "martinez@example.com"
-AND MONTH(reservations.reservation_date) MONTH(DATE_SUB(CURRENT_DATE,INTERVAL 1, MONTH))
-AND YEAR(reserations.reservation_date) YEAR(DATE_SUB(CURRENT_DATE, INTERVAL 1, YEAR));
+AND MONTH(reservations.reservation_date) MONTH(DATE_SUB(CURRENT_DATE,INTERVAL 1, MONTH));
+
 
 --7 Consulta para calcular el promedio de reservas diarias en un hotel
 SELECT reservations.reservation_id AS total_reservations,
