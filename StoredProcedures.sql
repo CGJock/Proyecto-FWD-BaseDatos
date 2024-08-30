@@ -63,6 +63,7 @@ CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07', 2,@result);
 
 SELECT @result
 
+--procedimiento para agregar un usuario solo lo pueden hacer los admin
 DELIMITER//
 
 CREATE PROCEDURE add_user(
@@ -75,17 +76,18 @@ CREATE PROCEDURE add_user(
     IN last_name VARCHAR(30),
     IN email VARCHAR(50),
     IN birth_date DATE,
+    IN user_admin INT,
     OUT message text
 )
     BEGIN
         DECLARE actual_role TEXT;
         SELECT  name_role INTO actual_role
         FROM user_list
-        WHERE role_id = 1
-        LIMIT 1;
+        WHERE user_admin = user_list.user_id;
+        
         
         IF actual_role = 'Admin' THEN
-            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date)
+            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date,actual_role)
             VALUES(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date);
             SET message = 'insertado con exito';
         ELSE
@@ -95,7 +97,7 @@ END//
 
 DELIMITER ;
 
-CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',@message)
+CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',1,@message)
       
 
 SELECT @message
@@ -112,12 +114,12 @@ CREATE PROCEDURE insertar_reservation(
     IN check_in_date DATE,
     IN check_out_date DATE,
     IN number_visitors INT,
-    IN room_id INT
+    IN room_id INT,
     )
     BEGIN
     DECLARE last_reservation_id INT;
 
-    INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors)
+    INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors,user_admin)
     VALUES(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors);
 
     
