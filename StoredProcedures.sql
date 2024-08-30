@@ -1,5 +1,7 @@
 USE Reservations_data;
 
+--============================================== consult room by date =====================================================
+
 --Procedure para consultar disponibilidad de una habitacion de acuerdo a una fecha
 DELIMITER//
 
@@ -27,9 +29,11 @@ BEGIN
     CALL consult_room_by_date(4,'2024-10-08', @avaliable_room );
     SELECT @avaliable_room
 
-DELIMITER//
+--============================================== calculate hotel ocupation by date =====================================================
 
 --consultar el promedio de ocupacion del hotel en un rango estimado 
+DELIMITER//
+
 CREATE PROCEDURE calculate_hotel_ocupation_by_date(
     IN date_start DATE,
     IN date_end DATE,
@@ -63,6 +67,9 @@ CALL calculate_hotel_ocupation_by_date('2024-09-01','2024-12-07', 2,@result);
 
 SELECT @result
 
+--============================================== add user ========================================================
+
+--procedimiento para agregar un usuario solo lo pueden hacer los admin
 DELIMITER//
 
 CREATE PROCEDURE add_user(
@@ -75,17 +82,18 @@ CREATE PROCEDURE add_user(
     IN last_name VARCHAR(30),
     IN email VARCHAR(50),
     IN birth_date DATE,
+    IN user_admin INT,
     OUT message text
 )
     BEGIN
         DECLARE actual_role TEXT;
         SELECT  name_role INTO actual_role
         FROM user_list
-        WHERE role_id = 1
-        LIMIT 1;
+        WHERE user_admin = user_list.user_id;
+        
         
         IF actual_role = 'Admin' THEN
-            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date)
+            INSERT INTO users(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date,actual_role)
             VALUES(user_id,role_id,sub_id,pay_id,first_name,middle_name,last_name,email,birth_date);
             SET message = 'insertado con exito';
         ELSE
@@ -95,11 +103,13 @@ END//
 
 DELIMITER ;
 
-CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',@message)
+CALL add_user(6999888,1,1,1,"juan",'fernandez','coronado','coronado@example.com','1990-07-01',1,@message)
 
 SELECT @message
 
 drop PROCEDURE add_user
+
+--============================================== insertar reservation =====================================================
 
 --procedure para insertar una habitacion
 DELIMITER//
@@ -111,12 +121,12 @@ CREATE PROCEDURE insertar_reservation(
     IN check_in_date DATE,
     IN check_out_date DATE,
     IN number_visitors INT,
-    IN room_id INT
+    IN room_id INT,
     )
     BEGIN
     DECLARE last_reservation_id INT;
 
-    INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors)
+    INSERT INTO reservations(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors,user_admin)
     VALUES(user_id,reservation_state_id,reservation_date,check_in_date,check_out_date,number_visitors);
 
     
@@ -130,6 +140,7 @@ DELIMITER ;
 
 CALL insertar_reservation(6999888,2,'2024-08-29','2024-08-30','2024-09-05',2,5)
 
+--============================================== insert room procedure =====================================================
 
 DELIMITER//
 
@@ -162,8 +173,36 @@ CALL insert_room_procedure(22,200,3,1,2,@message)
 
 SELECT @message
 
+--============================================== cancelar reservacion =====================================================
 
+DELIMITER//
 
+CREATE PROCEDURE cancelar_reservacion(
+    IN reservatiom_cancel INT,
+    IN user_id INT,
+    OUT message text
+)
+    BEGIN
+        DECLARE actual_role TEXT;
+        SELECT  name_role INTO actual_role
+        FROM user_list
+        WHERE user_id = user_list.user_id;
+        
+        IF actual_role = 'Admin' THEN
+            UPDATE reservations
+            SET reservation_state_id = 3
+            WHERE reservation_id = reservatiom_cancel ;
+            SET message = 'se cambio con exito esta reserva';
+        ELSE
+            SET message = "solo los administradores pueden cancelar reservas";
+        END IF;
+END//
 
+DELIMITER ;
 
+CALL cancelar_reservacion(1,845672,@message);
+
+SELECT @message
+
+DROP PROCEDURE cancelar_reservacion
 
