@@ -1,3 +1,10 @@
+Diagrama simple: [Administracion Hotelera ER Diagram.pdf](https://github.com/user-attachments/files/16835961/Administracion.Hotelera.ER.Diagram.pdf)
+
+
+Diagrama ER: [Database ER diagram (crow's foot).pdf](https://github.com/user-attachments/files/16835967/Database.ER.diagram.crow.s.foot.pdf)
+
+
+
 El proyecto consiste en la creacion de un base de datos para un hotel, se le dio un enfoque como si fuese una aplicacion web, donde administradores pueden crear tareas administrativas y los usuarios regulares crear reservaciones
 
 Se aplicaron la normalizacion de la siguiente manera:
