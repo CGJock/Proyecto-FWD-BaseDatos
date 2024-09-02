@@ -86,3 +86,13 @@ LEFT JOIN room_reservation ON rooms.room_id = room_reservation.room_id
 LEFT JOIN reservations ON room_reservation.reservation_id = reservations.reservation_id AND reservations.reservation_date BETWEEN DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))
 WHERE rooms.occupied = 0 ;
 
+
+
+
+SELECT 
+  users.email
+FROM reservations
+JOIN users ON users.user_id = reservations.user_id
+WHERE users.email = "garcia@example.com"
+
+

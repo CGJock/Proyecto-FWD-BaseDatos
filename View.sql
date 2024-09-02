@@ -12,4 +12,13 @@ SELECT users.user_id,users.role_id,users.first_name,users.middle_name,roles.name
 FROM users
 JOIN roles ON roles.role_id = users.role_id
 
---view que muestra las habitaciones de los hoteles con la ocupacion
+--view que muestra los datos generales de un hotel
+
+CREATE VIEW  hotel_info AS
+SELECT hotels.hotel_name , hotels.hotel_id ,rooms.room_number,rooms.occupied,type_room.category
+FROM hotels
+JOIN rooms ON rooms.hotel_id = hotels.hotel_id
+JOIN type_room on rooms.type_id = type_room.type_id
+WHERE hotels.hotel_name = 'Hotel Boutique'
+
+drop View hotel_info
